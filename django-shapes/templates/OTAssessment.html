@@ -1,0 +1,149 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Client{% endblock %}
+{% block content %}
+<style>
+    .demographic-item input {
+        margin-right: 20px;
+    }
+
+    .element.style {
+        margin-right: 20px;
+    }
+</style>
+<!-- form -->
+<form method="post" action="">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% csrf_token %}
+    <div class="form_input">
+        <div class="container">
+            <div class="input-flied">
+                <h2>Demographic ID<span class="text-filed">*</span></h2>
+            </div>
+            <div class="demographic-item1">
+                <label for="fname">Name:</label><br>
+                <input type="text" id="name" name="name" value="{{client.name}}" readonly required><br>
+            </div>
+            <div class="Demographic_input">
+                <span class="Demographic-left-side">
+                    <div class="demographic-outer">
+                        <div class="demographic-item">
+                            <label for="gender"> Gender:</label><br>
+                            <select name="gender" style="margin-right: 20px;">
+                                {% if client.gender == "Male" %}
+                                <option value="Male" selected>Male</option>{% endif %}
+                                {% if client.gender == "Female" %}
+                                <option value="Female" selected>Female</option>{% endif %}
+                                {% if client.gender == "Other" %}
+                                <option value="Other" selected>Other</option>{% endif %}
+                            </select>
+                        </div>
+                        <div class="demographic-item">
+                            <label for="birthday" class="date-picker ">D.O.B:</label><br>
+                            <input type="date" id="date" name="dob" value="{{client.dob}}" required onchange="getVal()"
+                                readonly><br>
+                        </div>
+                    </div>
+                    <div class="demographic-outer">
+                        <div class="demographic-item">
+                            <label for="fname">Age (years):</label><br>
+                            <input type="number" class="age" id="age" name="age" value='{{client.age}}' required
+                                readonly><br>
+                        </div>
+                        <div class="demographic-item">
+                            <label for="Date" class="date-picker">Date of Assessment:</label><br>
+                            <input type="date" id="birthday" name="date_of_assessment" onclick="maxs()" required>
+                        </div>
+                    </div>
+                </span>
+            </div>
+
+            <!-- form therapy -->
+            <div class="therapy-input1">
+
+                <div class="Chief_input1">
+                    <span class="Diagnerge-side">
+                        <p>Presenting Complaints</p>
+                        <textarea id="fname" name="presenting_complaints" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Milestone Development</p>
+                        <textarea id="fname" name="milestone_development" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Behavior Cognition</p>
+                        <textarea id="fname" name="behavior_cognition" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Cognitive Skills</p>
+                        <textarea id="fname" name="cognitive_skills" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Kinaesthesia</p>
+                        <textarea id="fname" name="kinaesthesia" cols="60" row="30" required></textarea>
+                    </span>
+
+                    <div class="btn-form-outer" style="display: flex; margin-top: 20px;">
+                        <div class="btn-form">
+                            <button class="save" id="save" value="Draft" name="draft">Save</button>
+                        </div>
+                        <div class="btn-form">
+                            <button class="submit" id="submit" value="Submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- form therapy -->
+</form>
+<script>
+    function maxs() {
+        var test = document.getElementById("birthday")
+        console.log(test)
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        console.log(maxDate)
+
+        document.getElementById("birthday")[0].setAttribute(maxDate);
+
+    }
+
+
+
+    $(function () {
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        console.log(maxDate)
+        $('#birthday').attr('max', maxDate);
+
+
+
+    });
+
+
+</script>
+{% endblock %}

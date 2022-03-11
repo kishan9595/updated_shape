@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Client{% endblock %}
+{% block content %}
+
+<!-- form -->
+<form method="post" action="">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% csrf_token %}
+    <div class="form_input">
+        <div class="container">
+            <div class="input-flied">
+                <h2>Demographics:</h2>
+            </div>
+            <div class="demographic-item1">
+                <label for="fname">Username</label><br>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="demographic-item">   
+                <label for="fname"> Department</label><br>
+                <select style="width: 500px;" name="department">
+                    <option value="BT">BT</option>
+                    <option value="OT">OT</option>
+                    <option value="ST">ST</option>
+                    <option value="PT">PT</option>
+                    <option value="SE">SE</option>
+                    <option value="FO">FO</option>
+                </select>
+            </div>
+            <br>    
+            <div class="demographic-item1">     
+                <label for="fname">Password</label><br>
+                <input type="password" id="name" name="password" required>
+            </div>
+            <!-- <div class="btn-outer">
+                <input type="submit" class="btn login-form__btn submit">
+            </div> --> 
+            <div class="demographic-item"></div>
+                <div class="btn-form-outer" style="display: flex; margin-top: 20px; justify-content: center; margin-left: -50%;">
+                    <div class="btn-form">
+                        <button style="padding-left: 229px; padding-right: 226px; margin-right: 63px;" class="save" id="submit" value="Submit" name="submit">Submit</button>
+                    </div>
+                </div>
+            </div>        
+        </div>
+    </div>
+    <!-- form therapy -->
+</form>
+{% endblock %}

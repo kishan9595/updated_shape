@@ -1,0 +1,68 @@
+{% load filter %}
+<table class="table table-bordered month-data">
+
+    <thead>
+        <tr>
+            <th></th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Slot Time</th>
+            <th>Created on</th>
+            <th>Assesments</th>
+            <th>Remarks</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% if client%}
+        {% for clients in client %}
+        <tr>
+            <td>
+                <input type="checkbox" id="accept" name="accept" value="yes"
+                    onchange="doalert(this,'{{clients.id}}','{{blnk_dic|get_item:clients.id}}','{{ clients.name}}')">
+            </td>
+            <td onclick="client_modal('{{clients.id}}')"><a href="#" data-toggle="modal"
+                    data-target="#exampleModal1">{{clients.id }}</a></td>
+            <td>{{ clients.name}}</td>
+            <td>{{ clients.phone}}</td>
+            <td>{{ clients.email}}</td>
+            <td>{{ clients.slot_time_from }}-{{clients.slot_time_to}}</td>
+            <td>{{ clients.created_on}}</td>
+            <td>
+                {% for assessment in blnk_dic|get_item:clients.id %}
+                {% if assessment == "ST" %}
+                <a href="stassesment_table/{{clients.id}}">{{assessment}}</a>
+                {% elif assessment == "BT" %}
+                <a href="assesment/{{clients.id}}">{{assessment}}</a>
+                {% else %}
+                <a href="otassesment_table/{{clients.id}}">{{assessment}}</a>
+                {% endif %}
+                {%endfor%}
+            </td>
+            <td>
+                {{clients.remarks}}
+            </td>
+            <td>
+                <a href="update_client/{{clients.id}}"><button type="button"
+                        class="btn btn-primary btn-sm">Edit</button></a>
+            </td>
+
+
+        </tr>
+        {% endfor %}
+
+        {% else %}
+        <tr>
+
+            <td colspan="12" style="text-align:center;">
+                <b>No record yet</b>
+            </td>
+
+        </tr>
+        {% endif %}
+
+    </tbody>
+</table>

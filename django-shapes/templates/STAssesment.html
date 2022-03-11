@@ -1,0 +1,235 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Client{% endblock %}
+{% block content %}
+<style>
+    .demographic-item input {
+        margin-right: 20px;
+    }
+
+    .demographic-item select {
+
+        margin-right: 20px;
+    }
+</style>
+
+<!-- form -->
+<form method="post" action="">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% csrf_token %}
+    <div class="form_input">
+        <div class="container">
+            <div class="input-flied">
+                <h2>Demographics<span class="text-filed">*</span></h2>
+            </div>
+            <div class="demographic-item1">
+                <label for="fname">Name:</label><br>
+                <input type="text" id="name" name="name" value="{{client.name}}" readonly required><br>
+            </div>
+            <div class="Demographic_input">
+                <span class="Demographic-left-side">
+                    <div class="demographic-outer">
+                        <div class="demographic-item">
+                            <label for="gender"> Gender:</label><br>
+                            <select name="gender">
+                                {% if client.gender == "Male" %}
+                                <option value="Male" selected>Male</option>{% endif %}
+                                {% if client.gender == "Female" %}
+                                <option value="Female" selected>Female</option>{% endif %}
+                                {% if client.gender == "Other" %}
+                                <option value="Other" selected>Other</option>{% endif %}
+                            </select>
+                        </div>
+                        <div class="demographic-item">
+                            <label for="birthday" class="date-picker">D.O.B:</label><br>
+                            <input type="date" id="date" name="dob" value="{{client.dob}}" required onchange="getVal()"
+                                readonly><br>
+                        </div>
+                    </div>
+                    <div class="demographic-outer">
+                        <div class="demographic-item">
+                            <label for="fname">Age (years):</label><br>
+                            <input type="number" class="age" id="age" name="age" value='{{client.age}}' required
+                                readonly><br>
+                        </div>
+                        <div class="demographic-item">
+                            <label for="Date" class="date-picker">Date of Assessment:</label><br>
+                            <input type="date" id="birthday" name="date_of_assessment" onclick="maxs()" required>
+                        </div>
+                    </div>
+                </span>
+            </div>
+            <!-- form therapy -->
+            <div class="therapy-input1">
+
+                <div class="Chief_input1">
+                    <span class="Diagnerge-side">
+                        <p>Babbling</p>
+                        <textarea id="fname" name="babbling" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>First Word</p>
+                        <textarea id="fname" name="first_word" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Main Mode Comm</p>
+                        <textarea id="fname" name="main_mode_comm" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Family History</p>
+                        <textarea id="fname" name="family_history" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Motor Developments</p>
+                        <textarea id="fname" name="motor_developments" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Oro Peripheral Mechanism</p>
+                        <textarea id="fname" name="oro_peripheral_mechanism" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Vegetative Skills</p>
+                        <textarea id="fname" name="vegetative_skills" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Vision</p>
+                        <textarea id="fname" name="vision" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Hearing</p>
+                        <textarea id="fname" name="hearing" cols="60" row="30" required></textarea>
+                    </span><br>
+                    <br>
+                    <span class="Diagnerge-side">
+                        <p>Response To Name Call</p>
+                        <textarea id="fname" name="response_to_name_call" cols="60" row="30" required></textarea>
+                    </span><br>
+                    <br>
+                    <span class="Diagnerge-side">
+                        <p>Environmental Sounds</p>
+                        <textarea id="fname" name="environmental_sounds" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Eye Contact</p>
+                        <textarea id="fname" name="eye_contact" cols="60" row="30" required></textarea>
+                    </span><br>
+                    <span class="Diagnerge-side">
+                        <p>Attention To Sound</p>
+                        <textarea id="fname" name="attention_to_sound" cols="60" row="30" required></textarea>
+                    </span><br>
+                    <span class="Diagnerge-side">
+                        <p>Imitation To Body Movements</p>
+                        <textarea id="fname" name="imitation_to_body_movements" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Imitation To Speech</p>
+                        <textarea id="fname" name="imitation_to_speech" cols="60" row="30" required></textarea>
+                    </span><br>
+                    <span class="Diagnerge-side">
+                        <p>Attention Level</p>
+                        <textarea id="fname" name="attention_level" cols="60" row="30" required></textarea>
+                    </span><br>
+                    <span class="Diagnerge-side">
+                        <p>Social Smile</p>
+                        <textarea id="fname" name="social_smile" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Initiates Interaction</p>
+                        <textarea id="fname" name="initiates_interaction" cols="60" row="30" required></textarea>
+                    </span><br>
+                    <span class="Diagnerge-side">
+                        <p>Receptive Language</p>
+                        <textarea id="fname" name="receptive_language" cols="60" row="30" required></textarea>
+                    </span><br>
+
+                    <span class="Diagnerge-side">
+                        <p>Expressive Language</p>
+                        <textarea id="fname" name="expressive_language" cols="60" row="30" required></textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Provisional Diagnosis</p>
+                        <textarea id="fname" name="provisional_diagnosis" cols="60" row="30" required></textarea>
+                    </span><br>
+                    <span class="Diagnerge-side">
+                        <p>Recommendations</p>
+                        <textarea id="fname" name="recommendations" cols="60" row="30" required></textarea>
+                    </span><br>
+                    <span class="Diagnerge-side">
+                        <p>Tests Administered</p>
+                        <textarea id="fname" name="tests_administered" cols="60" row="30" required></textarea>
+                    </span><br>
+                    <div class="demographic-outer">
+                        <span class="Diagnerge-side_flied" style="margin-right: 20px;">
+                            <p>Reels RL Score</p>
+                            <input type="number" id="fname" name="reels_RL_score" required>
+                        </span><br>
+                        <span class="Diagnerge-side_flied">
+                            <p>Reels EL Score</p>
+                            <input type="number" id="fname" name="reels_EL_score" required>
+                        </span><br>
+                    </div>
+                    <div class="btn-form-outer" style="display: flex; margin-top: 20px;">
+                        <div class="btn-form">
+                            <button class="save" id="save" value="Draft" name="draft">Save</button>
+                        </div>
+                        <div class="btn-form">
+                            <button class="submit" id="submit" value="Submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- form therapy -->
+</form>
+<script>
+    function maxs() {
+        var test = document.getElementById("birthday")
+        console.log(test)
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        console.log(maxDate)
+
+        document.getElementById("birthday")[0].setAttribute(maxDate);
+
+    }
+
+
+
+    $(function () {
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        console.log(maxDate)
+        $('#birthday').attr('max', maxDate);
+
+
+
+    });
+
+
+</script>
+
+{% endblock %}

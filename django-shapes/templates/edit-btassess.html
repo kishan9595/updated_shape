@@ -1,0 +1,222 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Client{% endblock %}
+{% block content %}
+
+<style>
+    .demographic-item input {
+        margin-right: 20px;
+    }
+
+    .demographic-item select {
+
+        margin-right: 20px;
+    }
+</style>
+
+<!-- form -->
+<form method="post" action="">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% csrf_token %}
+    <div class="form_input">
+        <div class="container">
+            <div class="input-flied">
+                <h2>Demographics:</h2>
+            </div>
+            <div class="demographic-item1">
+                <label for="fname">Name:</label><br>
+                <input type="text" id="name" name="name" value="{{client.clienttable.name}}" readonly required><br>
+            </div>
+            <div class="Demographic_input">
+                <span class="Demographic-left-side">
+                    <div class="demographic-outer">
+                        <div class="demographic-item">
+                            <label for="gender"> Gender</label><br>
+                            <select name="gender">
+
+                                {% if client.clienttable.gender == "Male" %}
+                                <option value="Male" selected>Male</option>{% endif %}
+                                {% if client.clienttable.gender == "Female" %}
+                                <option value="Female" selected>Female</option>{% endif %}
+                                {% if client.gender == "Other" %}
+                                <option value="Other" selected>Other</option>{% endif %}
+
+                            </select>
+                        </div>
+
+                        <div class="demographic-item">
+                            <label for="Date" class="date-picker">D.o.b</label><br>
+                            <input type="D.o.b" id="birthday" name="dob" value="{{client.clienttable.dob}}" required
+                                readonly><br>
+                        </div>
+                    </div>
+
+                    <div class="demographic-outer">
+                        <div class="demographic-item">
+                            <!-- <label for="Age" class="age">Age</label> -->
+                            <label for="fname">Age (years):</label><br>
+                            <input type="text" id="age" name="age" value="{{client.clienttable.age}}" required
+                                readonly><br>
+                        </div>
+
+                        <!-- form therapy -->
+                        <div class="demographic-item">
+                            <label for="Date" class="date-picker">Date of Assessment</label><br>
+                            <input type="date" id="asses_max" name="date_of_assessment"
+                                value="{{client.date_of_assessment}}" onclick="maxs()" required>
+                        </div>
+                    </div>
+                </span>
+            </div>
+
+            <div class="therapy-input1">
+                <div class="Chief_input1">
+                    <span class="Diagnerge-side">
+                        <p>Prenatal History</p>
+                        <textarea id="fname" name="prenatal_history" cols="60" row="30" value=""
+                            required>{{client.prenatal_history}}</textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Family History</p>
+                        <textarea id="fname" name="family_history" cols="60" row="30"
+                            required>{{client.family_history}}</textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Development History</p>
+                        <textarea id="fname" name="development_history" cols="60" row="30" value=""
+                            required>{{client.development_history}}</textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>School History</p>
+                        <textarea id="fname" name="school_history" cols="60" row="30" value=""
+                            required>{{client.school_history}}</textarea>
+                    </span><br>
+
+                    <div class="demographic-outer" style="margin-top: 10px;">
+                        <div class="demographic-item">
+                            <span class="Diagnerge-side">
+                                <label for="tests_administered"> Tests Administered</label><br>
+                                <select name="tests_administered">
+
+                                    <option value="DST" id="dst">DST</option>
+                                    <option value="VSMS" id="vsm" selected>VSMS</option>
+                                    <option value="MISIC" id="misic" selected>MISIC</option>
+                                </select>
+                            </span>
+                        </div>
+                        <div class="demographic-item">
+                            <span class="Diagnerge-side">
+                                <p>Test Results</p>
+                                <input type="number" id="test_results" name="test_results"
+                                    value="{{client.test_results}}" required>
+                            </span>
+                        </div>
+                    </div>
+                    <span class="Diagnerge-side">
+                        <p>Behavioural Observation</p>
+                        <textarea id="fname" name="behavioural_observation" cols="60" row="30" value=""
+                            required>{{client.behavioural_observation}}</textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Impression</p>
+                        <textarea id="fname" name="impression" cols="60" row="30" value=""
+                            required>{{client.impression}}</textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Recommendations</p>
+                        <textarea id="fname" name="recommendations" cols="60" row="30" value=""
+                            required>{{client.recommendations}}</textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Email Sent</p>
+                        {% if client.email_sent == "on" %}
+                        <input type="checkbox" name="email_sent" checked>
+                        {%else%}
+                        <input type="checkbox" name="email_sent">
+                        {%endif%}
+                    </span>
+
+                    <div class="btn-form-outer" style="display: flex; margin-top: 20px; ">
+
+                        <div class="btn-form ">
+
+                            <button class="save" id="save" value="Draft" name="draft">Save</button>
+
+                        </div>
+                        <div class="btn-form">
+                            <button class="submit" id="submit" value="Submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- form therapy -->
+</form>
+<script>
+
+    function maxs() {
+        var test = document.getElementById("asses_max")
+        console.log(test)
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        console.log(maxDate)
+
+        document.getElementById("asses_max")[0].setAttribute(maxDate);
+
+    }
+
+
+
+    $(function () {
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        console.log(maxDate)
+        $('#asses_max').attr('max', maxDate);
+
+
+
+    });
+
+
+    {% if client.tests_administered == "DST" %}
+    document.getElementById('dst').selected = true
+
+    {% elif client.tests_administered == "VSMS" %}
+    document.getElementById('vsm').selected = true
+
+    {% elif client.tests_administered == "MISIC" %}
+    document.getElementById('misic').selected = true
+    {% endif %}
+
+
+
+
+
+</script>
+
+{% endblock %}

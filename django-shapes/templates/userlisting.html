@@ -1,0 +1,138 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Client{% endblock %}
+{% block content %}
+
+<div class="container">
+    <div class="outer-bar" style="margin-bottom: 20px;">
+        <div class="input-flied-item">
+            <div class="input-search">
+                <i class="fa fa-search" aria-hidden="true"></i>
+                <input type="text" id="myInput" placeholder="Search..." onkeyup="myFunction()">
+            </div>
+            <div class="btn-group cli input-dropdown">
+                <select name="sort By" id="sortby" class="drop-select" style="margin-left: 0;" onchange="sort()">
+                    <option value="none" selected>Sort By</option>
+                    <option value="asc">Latest</option>
+                    <option value="dsc">Oldest</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="btn_flied-item">
+            <div class="add-btn" style="display: flex; justify-content: right;">
+                <a href="{% url 'create_user' %}"><button type="button"
+                        class="btn btn-primary btn-sm "></i>Add</button></a>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered month-data" id="month-data">
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Department</th>
+                <th>Password</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if user%}
+            {% for users in user %}
+            <tr>
+                <td>{{ users.id }}</td>
+                <td>{{ users.username}}</td>
+                <td>{{ users.department}}</td>
+                <td>*******</td>
+                <td><a href="update_user/{{ users.id }}"><button type="button"
+                            class="btn btn-primary btn-sm ">Edit</button></a></td>
+
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+
+                <td colspan="12" style="text-align:center;">
+                    <b>No record yet</b>
+                </td>
+
+            </tr>
+            {% endif %}
+
+
+
+        </tbody>
+    </table>
+
+    <span>Page {{ user.number }} of {{ user.paginator.num_pages }}</span>
+    <center>
+        {% if user.has_other_pages %}
+        <ul class="pagination">
+            {% if user.has_previous %}
+            <li><a href="?page={{ user.previous_page_number }}">Previous</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in user.paginator.page_range %}
+            {% if user.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if user.has_next %}
+            <li><a href="?page={{ client.next_page_number }}">Next</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+
+    </center>
+
+
+</div>
+<script>
+
+    function sort() {
+        sort_by = $('#sortby').val();
+        console.log(sort_by)
+        $.ajax({
+            type: "GET",
+            data: {
+                "sort_by": sort_by,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+
+            success: function (data) {
+                $('#month-data').html(data['html']);
+
+
+            },
+        });
+    }
+
+    function myFunction() {
+        search = $('#myInput').val();
+        console.log(search)
+        $.ajax({
+            type: "GET",
+            data: {
+                "search": search,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+
+            success: function (data) {
+                $('#month-data').html(data['html']);
+
+
+            },
+        });
+    }
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% load static %}
+{% block content %}
+
+{% for f in client_data %}
+
+{% for d in data %}
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>file_1646301171367</title>
+        <style type="text/css">
+                .assesment_details {
+                        margin-top: 20px;
+
+                }
+
+                .hr {
+                        margin-top: 10px;
+                }
+
+                * {
+                        margin: 0;
+                        padding: 0;
+                        text-indent: 0;
+                }
+
+                p {
+                        color: #03296F;
+                        font-family: Arial, sans-serif;
+                        font-style: normal;
+                        font-weight: bold;
+                        text-decoration: none;
+                        font-size: 11pt;
+                        margin: 0pt;
+                }
+
+                .s1 {
+                        color: black;
+                        font-family: Arial, sans-serif;
+                        font-style: normal;
+                        font-weight: normal;
+                        text-decoration: none;
+                        font-size: 11pt;
+                }
+
+                a {
+                        color: black;
+                        font-family: Arial, sans-serif;
+                        font-style: normal;
+                        font-weight: normal;
+                        text-decoration: none;
+                        font-size: 11pt;
+                }
+
+                h1 {
+                        color: #598BAF;
+                        font-family: Arial, sans-serif;
+                        font-style: normal;
+                        font-weight: bold;
+                        text-decoration: none;
+                        font-size: 11pt;
+                }
+
+                .s2 {
+                        color: #8E8E8E;
+                        font-family: "Trebuchet MS", sans-serif;
+                        font-style: normal;
+                        font-weight: normal;
+                        text-decoration: none;
+                        font-size: 9.5pt;
+                }
+        </style>
+</head>
+
+<body>
+        <center>
+                <h3>Client Information</h3>
+        </center>
+        <p style="text-indent: 0pt;text-align: left;"><br /></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Client Name :<span
+                        class="s1">{{f.name}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Client DOB :<span
+                        class="s1">{{f.dob}}</span></p>
+        <hr class="hr">
+        <center>
+                <h3 class="assesment_details">Assesment details</h3>
+        </center>
+        <p style="text-indent: 0pt;text-align: left;"><br /></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Therapist :<span
+                        class="s1">{{d.therapist}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Date_of_assessment :<span
+                        class="s1">{{d.date_of_assessment}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Babbling :<span
+                        class="s1">{{d.babbling}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">First_word :<span
+                        class="s1">{{d.first_word}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Main_mode_comm :<span
+                        class="s1">{{d.main_mode_comm}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Family_history :<span
+                        class="s1">{{d.family_history}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Motor_developments :<span
+                        class="s1">{{d.motor_developments}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Oro_peripheral_mechanism
+                :<span class="s1">{{d.oro_peripheral_mechanism}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Vegetative_skills :<span
+                        class="s1">{{d.vegetative_skills}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Vision :<span
+                        class="s1">{{d.vision}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Hearing :<span
+                        class="s1">{{d.hearing}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Response_to_name_call :<span
+                        class="s1">{{d.response_to_name_call}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Environmental_sounds :<span
+                        class="s1">{{d.environmental_sounds}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Eye_contact :<span
+                        class="s1">{{d.eye_contact}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Attention_to_sound :<span
+                        class="s1">{{d.attention_to_sound}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Imitation_to_body_movements
+                :<span class="s1">{{d.imitation_to_body_movements}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Imitation_to_speech :<span
+                        class="s1">{{d.imitation_to_speech}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Attention_level :<span
+                        class="s1">{{d.attention_level}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Social_smile :<span
+                        class="s1">{{d.social_smile}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Initiates_interaction :<span
+                        class="s1">{{d.initiates_interaction}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Receptive_language :<span
+                        class="s1">{{d.receptive_language}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Expressive_language :<span
+                        class="s1">{{d.expressive_language}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Provisional_diagnosis :<span
+                        class="s1">{{d.provisional_diagnosis}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Recommendations :<span
+                        class="s1">{{d.recommendations}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Reels_RL_score :<span
+                        class="s1">{{d.reels_RL_score}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Tests_administered :<span
+                        class="s1">{{d.tests_administered}}</span></p>
+        <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Status :<span
+                        class="s1">{{d.Status}}</span></p>
+
+</body>
+
+</html>
+
+{% endfor %}
+{% endfor %}
+{% endblock %}

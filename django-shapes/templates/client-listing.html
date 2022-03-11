@@ -1,0 +1,637 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Client{% endblock %}
+{% block content %}
+{% load filter %}
+<style>
+    .add-btn :hover {
+        text-decoration: none;
+
+    }
+    
+</style>
+
+<div class="container">
+    <div class="outer-bar" style="margin-bottom: 20px;">
+        <div class="input-flied-item">
+            <div class="input-bar">
+                <div class="input-search">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                    <input type="text" id="myInput" placeholder="Search with name, phoneno and id" onkeyup="myFunction()">
+                </div>
+            </div>
+
+            <div class="input-picker">
+                <input style="display:inherit;height:40px;width: 175px;" onchange="datepicker()" id="datepicker"
+                    type="date" value="" class="form-control">
+
+            </div>
+
+            <div class="btn-group cli input-dropdown">
+                <select name="sort By" id="sortby" class="drop-select" onchange="sort()">
+                    <option value="none" selected>Sort By</option>
+                    <option value="asc">Latest</option>
+                    <option value="dsc">Oldest</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="btn_flied-item">
+            <div class="add-btn" style="display: flex; justify-content: right;" data-toggle="modal" data-target="#exampleModal">
+                <a href="javascript:void(0)"><button type="button" class="btn btn-primary btn-sm ">Add Assesment</button></a>
+            </div>
+        </div>
+
+
+
+        <div class="btn_flied-item">
+            <div class="add-btn" style="display: flex; justify-content: right;">
+                <a href="{% url 'client' %}"><button type="button" class="btn btn-primary btn-sm ">Add Client</button></a>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered month-data" id="month-data">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% csrf_token %}
+
+        <thead>
+
+
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Slot Time</th>
+                <th>Created on</th>
+                <th>Assesments</th>
+                <th>Remarks</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+            {% if client%}
+            {% for clients in client %}
+            <tr>
+                <td>
+                    <input type="checkbox" id="accept" name="accept" value="yes" onchange="doalert(this,{{clients.id}},'{{blnk_dic|get_item:clients.id}}','{{ clients.name}}')">
+                </td>
+                <td onclick="client_modal('{{clients.id}}')"><a href="#" data-toggle="modal" data-target="#exampleModal1">{{clients.id }}</a></td>
+                <td>{{ clients.name}}</td>
+                <td>{{ clients.phone}}</td>
+                <td>{{ clients.email}}</td>
+                <td>{{ clients.slot_time_from }}-{{clients.slot_time_to}}</td>
+                <td>{{ clients.created_on}}</td>
+                <td>
+                    {% for assessment in blnk_dic|get_item:clients.id %}
+                    {% if assessment == "ST" %}
+                    <a href="stassesment_table/{{clients.id}}">{{assessment}}</a>
+                    {% elif assessment == "BT" %}
+                    <a href="assesment/{{clients.id}}">{{assessment}}</a>
+                    {% else %}
+                    <a href="otassesment_table/{{clients.id}}">{{assessment}}</a>
+                    {% endif %}
+                    {%endfor%}
+                </td>
+                <td>
+                    {{clients.remarks}}
+                </td>
+                <td>
+                    <a href="update_client/{{clients.id}}"><button type="button"
+                        class="btn btn-primary btn-sm">Edit</button></a>
+                </td>
+
+
+            </tr>
+            {% endfor %}
+
+            {% else %}
+            <tr>
+
+                <td colspan="12" style="text-align:center;">
+                    <b>No record yet</b>
+                </td>
+
+            </tr>
+            {% endif %}
+
+        </tbody>
+        <!-- Modal -->
+<div class="modal fade" id="exampleModal1" style="margin-top: 29px;" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header mt-3">
+            <h4 class="modal-title" id="exampleModalLabel" style="font-size: 25px;margin-top: 352px;">View Client</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="demographic-outer">
+            <div class="demographic-item">
+                <label for="fname">Name:</label><br>
+                <input type="text" readonly id="name" name="name" value="{{request.POST.name}}" style="height: 35px;width: 200px;" required><br>
+            </div>
+            <div class="demographic-item ms-3" >
+                <label for="gender"> Gender:</label><br>
+                <select name="gender" style="height: 35px; " id="gender" disabled>
+                    <option value="Male"  style="height: 32px;width: 200px;">Male</option>
+                    <option value="Female"  style="height: 32px;width: 200px;">Female</option>
+                    <option value="Other"  style="height: 32px;width: 200px;">Other</option>
+                </select>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
+            </div>
+            </div>
+
+            <div class="demographic-outer">
+                <div class="demographic-item ">
+                    <label for="fname">Age (years):</label><br>
+                    <input type="number" readonly class="age" id="age" name="age" value="{{request.POST.age}}" required
+                        readonly style="height: 30px;width: 200px;"><br>
+                </div>
+
+                <div class="demographic-item ms-3">
+                    <label for="fname">DOB:</label><br>
+                    <input type="text" class="age" readonly id="dob" name="age" value="{{request.POST.age}}" required
+                        readonly style="height: 30px;width: 240px;"><br>
+                </div>
+            </div>
+
+            <div class="addres_input">
+                <span class="left-side">
+                    <div class="demographic-item" style="margin-bottom: 16px;">
+                        <label for="fname">Phone:</label><br>
+                        <input type="text" readonly id="phone" name="phone" value="{{request.POST.phone}}" required style="height: 30px;width: 200px;"><br>
+                    </div>
+                    <div class="demographic-item " style="margin-bottom: 16px;">
+                        <label for="fname">Email:</label><br>
+                        <input type="email" readonly id="email" name="email" value="{{request.POST.email}}"
+                            onblur="validateEmail(this.value)" required style="height: 30px;width: 200px;"><br>
+                        <p id="email_error" style="color: red;">
+                            
+                    </div>
+                    <div class="demographic-item" style="margin-bottom: 16px;">
+                        <label for="fname">Father Name:</label><br>
+                        <input type="text" readonly id="father_name" name="father_name" value="{{request.POST.father_name}}"
+                            required style="height: 30px;width: 200px;"><br>
+                    </div>
+                </span>
+                <span class="left-side">
+                    <div class="demographic-item ms-3" style="margin-bottom: 16px;">
+                        <label for="fname">Alternate Phone:</label><br>
+                        <input type="text" readonly id="alternate_phone" name="alternate_phone"
+                            value="{{request.POST.alternate_phone}}" required style="height: 30px;width: 240px;"><br>
+                        <span class="text-danger">{{alternate_error}}</span>
+                    </div>
+                    <div class="demographic-item ms-3" style="margin-bottom: 16px;">
+                        <label for="fname">Mother Tongue</label><br>
+                        <input type="text" readonly id="mother_tongue" name="mother_tongue"
+                            value="{{request.POST.mother_tongue}}" required style="height: 30px;width: 240px;"><br>
+                        <span class="text-danger">{{mother_tongue_error}}</span>
+                    </div>
+                    <div class="demographic-item ms-3" style="margin-bottom: 16px;">
+                        <label for="fname">Mother Name</label><br>
+                        <input type="text" readonly id="mother_name" name="mother_name" value="{{request.POST.mother_name}}"
+                            required style="height: 30px;width: 240px;"><br>
+                    </div>
+                </span>
+
+            </div>
+            <div class="Address_flied">
+                <div class="demographic-item" style="margin-bottom: 16px;">
+                    <label for="fname">Branch:</label><br>
+                    <input type="text" readonly id="branch1" name="branch" value="{{request.POST.branch}}" required style="width: 450px;"><br>
+                </div>
+                <div class="demographic-item" style="margin-bottom: 16px;">
+
+
+                    <div class="demographic-item" style="margin-bottom: 10px;">
+                        <label for="fname">Address:</label><br>
+                        <input type="text" readonly id="address" name="address" value="{{request.POST.address}}" style="width: 450px; height: 33px;!important" required><br>
+                    </div>
+
+
+                </div>
+
+
+                <div class="input-flied">
+                    <h2>Discontinued<span class="text-filed">*</span></h2>
+                </div>
+                <div class="created_input">
+                    <span class="left-side1">
+                        <span class="created-left-side">
+                            <input type="radio" id="discontinious" name="discontinious" value="True" checked disabled>
+                        </span>
+                        <label for="fname" class="discontinued-item discontinued1">Discontinued</label>
+                    </span>
+                </div>
+                <div class="discontinued">
+                    <span class="left-side">
+                        <label for="fname" class="discontinued-item" style="margin-bottom: 10px;">Discontinued
+                            On:</label><br>
+                        <input type="text" readonly id="discontinious_on" name="discontinious_on"
+                            value="{{request.POST.discontinious_on}}" required  style="height: 30px;width: 220px;">
+                    </span>
+                </div>
+                <div class="outer1" style="display: flex;">
+                    <div class="outer" style="width: 50%">
+                        <div class="input-flied1">
+                            <h2>Assesments<span class="text-filed">*</span></h2>
+                        </div>
+                        <div class="created_input">
+                            <span class="created-left-side">
+                                <input type="checkbox" id="BT" name="assessment" value="BT" checked disabled>
+                                <label for="contactChoice1" class="toggle">BT</label>
+
+                                <input type="checkbox" id="OT" name="assessment" value="OT" checked disabled>
+                                <label for="contactChoice2" class="toggle">OT</label>
+
+                                <input type="checkbox" id="ST" name="assessment" value="ST" checked disabled>
+                                <label for="contactChoice3" class="toggle">ST</label>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="outer" style="width: 50%">
+                        <div class="input-flied1">
+                            <h2>Slot time<span class="text-filed">*</span></h2>
+                        </div>
+                        <div class="demographic-item">
+                            <input type="text" readonly style="height: 30px;width: 220px;" id="slot_time" value="">
+
+
+                        </div>
+                    </div>
+
+                    
+                </div>
+                
+            </div>
+            <div class="therapy-input">
+                <div class="b">
+                    <label for="theropy"> Therapy</label>
+                    <select name="theropy">
+                        <option id="bt" value="BT" >BT</option>
+
+                    </select>
+                    
+    
+                </div>
+                <div class="j">
+                    <span class="Diagnerge-side">
+                        <p>Chief Complaints:</p>
+                        <textarea id="chief_complaints" name="chief_complaints" cols="55" row="30" value=""
+                            required readonly>{{request.POST.chief_complaints}}</textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Diagnerge</p>
+                        <textarea id="diagnosis" name="diagnosis" cols="55" row="30" value=""
+                            required readonly>{{request.POST.diagnosis}}</textarea>
+                    </span>
+                    <span class="Diagnerge-side">
+                        <p>Remarks:</p>
+                        <textarea id="remarks"  name="remarks" cols="55" row="30" value=""
+                            required readonly>{{request.POST.remarks}}</textarea>
+                    </span>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    </table>
+    <span>Page {{ client.number }} of {{ client.paginator.num_pages }}</span>
+    <center>
+        {% if client.has_other_pages %}
+        <ul class="pagination">
+            {% if client.has_previous %}
+            <li><a href="?page={{ client.previous_page_number }}">Previous</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in client.paginator.page_range %}
+            {% if client.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if client.has_next %}
+            <li><a href="?page={{ client.next_page_number }}">Next</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+
+    </center>
+
+
+    <!-- Modal -->
+<div class="modal fade" style="margin-top: 19px;" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header mt-5">
+          <h3 class="modal-title" id="exampleModalLabel">Add Assesment</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="post" id="modal_form">
+            {% csrf_token %}
+        <div class="modal-body">
+            <div class="form_input">
+                <div class="demographic-item">
+                    <label for="fname">Client Name:</label><br>
+                    <select style="width: 470px;" name="client_select" id="client_select" required > 
+                        <option value=""  selected disabled>Select Client</option>
+                        {% for k in client %} 
+                        <option value="{{k.id}}" >{{k.name}}</option>
+                        <hr>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="demographic-item">   
+                    <label for="fname"> Assessment</label><br>
+                    <select style="width: 470px;" name="department" id="mySelect" required> 
+                        <option value=""  selected disabled>Select Assessment</option> 
+                    </select>
+                </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="modal_submit()">Add Assessment</button>
+        </div>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+function client_modal(id){
+    $.ajax({
+            type: "get",
+            data: {
+                'id': id,
+                'csrfmiddlewaretoken': '{{csrf_token}}',
+                'client_modal':'123'
+            },
+
+            success: function (data) {
+                name = document.getElementById('name').value=data.data[0]['name']
+                gender = document.getElementById('gender')
+                gender.value = data.data[0]['gender']
+                age = document.getElementById('age').value=data.data[0]['age']
+                dob = document.getElementById('dob').value=data.data[0]['dob']
+                phone = document.getElementById('phone').value=data.data[0]['phone']
+                email = document.getElementById('email').value=data.data[0]['email']
+                father_name = document.getElementById('father_name').value=data.data[0]['father_name']
+                mother_name = document.getElementById('mother_name').value=data.data[0]['mother_name']
+                alternate_phone = document.getElementById('alternate_phone').value=data.data[0]['alternate_phone']
+                mother_tongue = document.getElementById('mother_tongue').value=data.data[0]['mother_tongue']
+                branch1 = document.getElementById('branch1').value=data.data[0]['branch']
+                mother_tongue = document.getElementById('mother_tongue').value=data.data[0]['mother_tongue']
+                address = document.getElementById('address').value=data.data[0]['address']
+                remarks = document.getElementById('chief_complaints').innerHTML=data.data[0]['chief_complaints']
+                diagnosis = document.getElementById('diagnosis').innerHTML=data.data[0]['diagnosis']
+                diagnosis = document.getElementById('remarks').innerHTML=data.data[0]['remarks']
+                discontinious_on = document.getElementById('discontinious_on').value=data.data[0]['discontinious_on']
+                let a = data.data[0]['slot_time_from'] + '\xa0-\xa0'+ data.data[0]['slot_time_to']
+                slot_time = document.getElementById('slot_time').value=a
+
+                if (data.data[0]['asess_ls'] == "BT"){
+                    document.getElementById('BT').checked=true;
+                    document.getElementById('OT').checked=false;
+                    document.getElementById('ST').checked=false;
+                }
+                else if (data.data[0]['asess_ls'] == 'BT, OT, ST'){
+                    console.log("All Match")
+
+                    document.getElementById('BT').checked=true;
+                    document.getElementById('OT').checked=true;
+                    document.getElementById('ST').checked=true;
+                }
+                else if (data.data[0]['asess_ls'] == 'BT, OT'){
+                    console.log("All Match")
+
+                    document.getElementById('BT').checked=true;
+                    document.getElementById('OT').checked=true;
+                    document.getElementById('ST').checked=false;
+                }
+                else if (data.data[0]['asess_ls'] == 'BT, ST'){
+                    console.log("All Match")
+
+                    document.getElementById('BT').checked=true;
+                    document.getElementById('OT').checked=false;
+                    document.getElementById('ST').checked=true;
+                }
+
+                else if (data.data[0]['asess_ls'] == "ST"){
+                    document.getElementById('BT').checked=false;
+                    document.getElementById('OT').checked=false;
+                    document.getElementById('ST').checked=true;
+
+                }
+                else if (data.data[0]['asess_ls'] == "OT"){
+                    document.getElementById('BT').checked=false;
+                    document.getElementById('OT').checked=true;
+                    document.getElementById('ST').checked=false;
+
+                }
+
+               
+ 
+              
+             
+
+
+
+            }});}
+
+
+document.getElementById('client_select').addEventListener('change', function() {
+  var assesment = document.getElementById("mySelect")
+  var opt = document.createElement('option');
+  a = this.value;
+  console.log(a)
+  $.ajax({
+            type: "get",
+            data: {
+                'id': a,
+                'csrfmiddlewaretoken': '{{csrf_token}}',
+                'ajax_req':'123'
+            },
+
+            success: function (data) {
+                $("#mySelect").empty();
+                a = data.data[0]['assessment']
+                $.each(a, function(key, value) {
+  $('#mySelect').append('<option value="' + value + '">' + (value == '-1' ? 'select' : value) + '</option>');
+});
+
+            },
+        });
+
+});
+
+function doalert(checkboxElem,id,os,name) {
+
+
+    var checkBox = document.getElementById("accept");
+    var client_select = document.getElementById("client_select")
+    var asses_select = document.getElementById("mySelect")
+    var opt = document.createElement('option');
+    
+  if (checkboxElem.checked) {
+    $("#client_select").empty();
+    $("#mySelect").empty();
+    opt.value=id
+    opt.innerHTML=name
+    client_select.add(opt)
+
+    $.each(os.split(','), function(key, value) {
+  $('#mySelect').append('<option value="' + value + '">' + (value == '-1' ? 'select' : value) + '</option>');
+});
+
+  } 
+  else 
+
+  {
+    var opt_asses = document.createElement('option_asses');  
+    $("#client_select").empty();
+    $("#mySelect").empty();
+    opt.value=""
+    opt.innerHTML="Select Client"
+    opt.setAttribute("disabled", "disabled");
+    opt.setAttribute("selected", "selected");
+    client_select.add(opt)
+
+
+
+
+
+
+    {% for k in client %}
+    value = {{k.id}}
+    console.log(value)
+    $.each('{{k.name}}'.split(','), function(key,value) {
+  $('#client_select').append('<option value="' + {{k.id}} + '">' + (value == '-1' ? 'select' : value) + '</option>');
+}); 
+   {%endfor%}
+
+  }
+}
+
+
+
+function modal_submit(){
+    var client = document.getElementById("modal_form").elements.item(1).value;
+    var assessment = document.getElementById("modal_form").elements.item(2).value.trim();
+    console.log(assessment)
+    if (assessment == "BT"){
+        window.location = "assesment/"+client;
+    } 
+    else if (assessment == "ST"){
+        window.location = "stassesment_table/"+client;
+    }
+    else if (assessment == "OT"){
+        window.location = "otassesment_table/"+client;
+    }
+    
+    // document.getElementById("modal_form").submit()
+}
+
+        
+        
+
+
+
+
+
+
+
+
+
+
+    function datepicker() {
+        console.log("date")
+
+        let date = $('#datepicker').val();
+        search = $('#myInput').val();
+        console.log("date-piker", date)
+
+        $.ajax({
+            type: "get",
+            data: {
+                'date': date,
+                'search':search,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+
+            success: function (data) {
+
+
+                $('#month-data').html(data['html']);
+
+            },
+        });
+    }
+
+
+    function sort() {
+        sort_by = $('#sortby').val();
+        console.log(sort_by)
+        $.ajax({
+            type: "GET",
+            data: {
+                "sort_by": sort_by,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+
+            success: function (data) {
+                $('#month-data').html(data['html']);
+
+
+            },
+        });
+    }
+
+    function myFunction() {
+        search = $('#myInput').val();
+        let date = $('#datepicker').val();
+        console.log("date-piker", date)
+        console.log(search, 'no search')
+        $.ajax({
+            type: "GET",
+            data: {
+                "search": search,
+                "date":date,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+
+            success: function (data) {
+                console.log(data, "data me h")
+                $('#month-data').html(data['html']);
+
+
+            },
+        });
+    }
+
+
+</script>
+{% endblock %}

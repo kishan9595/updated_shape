@@ -1,0 +1,39 @@
+<table class="table table-bordered month-data" id="month-data">
+
+    <thead>
+
+
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Department</th>
+            <th>Password</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if client%}
+        {% for users in client %}
+        <tr>
+            <td>{{ users.id }}</td>
+            <td>{{ users.username}}</td>
+            <td>{{ users.department}}</td>
+            <td>*******</td>
+            <td><a href="update_user/{{ users.id }}"><button type="button"
+                        class="btn btn-primary btn-sm ">Edit</button></a></td>
+        </tr>
+        {% endfor %}
+
+        {% else %}
+        <tr>
+
+            <td colspan="12" style="text-align:center;">
+                <b>No record yet</b>
+            </td>
+
+        </tr>
+        {% endif %}
+
+    </tbody>
+</table>

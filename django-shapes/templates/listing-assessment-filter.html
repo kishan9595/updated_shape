@@ -1,0 +1,90 @@
+{% load filter %}
+<table class="table table-bordered month-data" id="month-data">
+
+    <thead>
+
+
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Username</th>
+            <th>Assesments</th>
+            <th>Status</th>
+            <th>PDF</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!--body-->
+        {%if client%}
+        {% for clients in client %}
+        <tr>
+            <td><a href="#" data-toggle="modal" data-target="#exampleModal1"
+                    onclick="client_modal('{{clients.id}}','{{blnk_dic|get_item:clients.id}}','{{clients.name}}')">{{clients.id}}</a>
+            </td>
+            <td>{{clients.name}}</td>
+            <td>{{clients.user.department}}</td>
+            <td>{{clients.user}}</td>
+            <td style="width: 22px;">
+                {% if clients.assessment|length > 1 %}
+                <div class="demographic-item">
+                    <select name="gender" onchange="assesment_status(value,'{{clients.id}}')">
+                        <option value="" selected disabled>View Status</option>
+                        {% for assessment in blnk_dic|get_item:clients.id %}
+
+                        <option value="{{assessment}}" id="status_acess">{{assessment}}</option>
+                        {%endfor%}
+
+                    </select>
+                    {%else%}
+                    {{clients.assessment}}
+                    {%endif%}
+
+            </td>
+            <td>
+                {% if clients.assessment|length > 1 %}
+                <input type="text" id="{{clients.id}}" value="Select Assesment"
+                    style="background: transparent; border:none;">
+                {%else%}
+                {% if status|get_item:clients.id == none %}
+                Not Started
+                {%else%}
+                {{status|get_item:clients.id}}
+                {%endif%}
+                {%endif%}
+
+
+            </td>
+            <td>
+                {% if clients.assessment|length == 1 and status|get_item:clients.id == "Submited" %}
+
+                <a href="download_pdf_file/{{clients.id}}?assesment_id={{clients.assessment}}" class=" pdfclass"
+                    id="pdf{{clients.id}}" value="Select Assesment">View Pdf
+                </a>
+                {% elif clients.assessment|length == 1 and status|get_item:clients.id == "Draft" %}
+
+                <a href="download_pdf_file/{{clients.id}}?assesment_id={{clients.assessment}}" class=" pdfclass"
+                    id="pdf{{clients.id}}" value="Select Assesment">View Pdf
+                </a>
+                {%else%}
+                <a class="pdfclass" id="pdf{{clients.id}}" value="Select Assesment">NO PDF Available
+                </a>
+                {%endif%}
+            </td>
+
+        </tr>
+
+        {% endfor %}
+        {% else %}
+        <tr>
+
+            <td colspan="12" style="text-align:center;">
+                <b>No record yet</b>
+            </td>
+
+        </tr>
+        {% endif %}
+
+
+    </tbody>
+</table>

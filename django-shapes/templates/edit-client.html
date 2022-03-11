@@ -1,0 +1,521 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Client{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<style>
+    .Chief_input.text-input-aera input {
+        background: #ffffff;
+        border: 1px solid #cecece;
+        padding: 8px 16px;
+        border-radius: 4px;
+    }
+
+    span.text-danger {
+        position: absolute;
+        bottom: -22px;
+        font-size: 14px;
+    }
+
+    .demographic-item {
+        margin-right: 20px;
+        position: relative !important;
+        margin-bottom: 20px;
+    }
+
+    .demographic-outer {
+        display: flex;
+        margin-bottom: 1px;
+    }
+</style>
+<!-- form -->
+<form method="post" id="sub_form" action="">
+    {% csrf_token %}
+    <div class="form_input">
+        <div class="container">
+            <div class="input-flied">
+                <h2>Demographics*</h2>
+            </div>
+            <div class="Demographic_input">
+                <span class="Demographic-left-side">
+                    <div class="demographic-outer">
+                        <div class="demographic-item">
+                            <label for="fname">Name:</label><br>
+                            <input type="text" id="name" name="name" {% if client %} value="{{client.name}}" {%else%}
+                                value="{{request.POST.name}}" {%endif%} readonly required><br>
+                            <span class="text-danger">{{name_error}}</span>
+                        </div>
+                        <div class="demographic-item">
+                            <label for="gender"> Gender:</label><br>
+                            <select name="gender">
+                                <option value="Male" selected id="male_chkbox">Male</option>
+                                <option value="Female" selected id="female_chkbox">Female</option>
+                                <option value="Other" id="other_chkbox">Other</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="demographic-outer">
+                        <div class="demographic-item">
+                            <label for="birthday" class="date-picker">D.O.B:</label>
+                            <br />
+                            <input type="date" id="date" name="dob" {% if client %} value="{{client.dob}}" {%else%}
+                                value="{{request.POST.dob}}" {%endif%} required onchange="getVal()"
+                                onclick="maxs()"><br>
+                        </div>
+                        <div class="demographic-item">
+                            <label for="fname">Age (years):</label>
+                            <br />
+                            <input type="number" class="age" id="age" name="age" {% if client %} value="{{client.age}}" {%else%}
+                                value="{{request.POST.age}}" {%endif%} required
+                                readonly><br>
+                        </div>
+                    </div>
+                </span>
+
+            </div>
+            <div class="input-flied">
+                <h2>Address
+                    <span class="text-filed">*</span>
+                </h2>
+            </div>
+            <div class="addres_input">
+                <span class="left-side">
+                    <div class="demographic-item" style="margin-bottom: 20px;">
+                        <label for="fname">Phone:</label>
+                        <br />
+                        <input type="text" id="phone" name="phone" {% if client %}value="{{client.phone}}" {%else%}
+                            value="{{request.POST.phone}}" {%endif%} readonly required><br>
+                        <span class="text-danger">{{phone_error}}</span>
+                    </div>
+                    <div class="demographic-item" style="margin-bottom: 20px;">
+                        <label for="fname">Email:</label>
+
+                        <br />
+                        <input type="email" id="email" name="email" {% if client %} value="{{client.email}}" {%else%}
+                            value="{{request.POST.email}}" {%endif%} onblur="validateEmail(this.value)" required><br>
+                        <p id="email_error" style="color: red;"></p>
+                        <span class="text-danger">{{email_error}}</span>
+                    </div>
+                    <div class="demographic-item" style="margin-bottom: 20px;">
+                        <label for="fname">Father Name:</label>
+                        <br />
+                        <input type="text" id="father_name" name="father_name" {% if client %}
+                            value="{{client.father_name}}" {%else%} value="{{request.POST.father_name}}" {%endif%}
+                            required><br>
+                    </div>
+
+                </span>
+
+
+
+                <span class="left-side">
+
+                    <div class="demographic-item" style="margin-bottom: 20px;">
+                        <label for="fname">Alternate Phone:</label>
+                        <br />
+                        <input type="text" id="alternate_phone" name="alternate_phone" {% if client %}
+                            value="{{client.alternate_phone}}" {%else%} value="{{request.POST.alternate_phone}}"
+                            {%endif%} required><br>
+                        <span class="text-danger">{{alternate_phone}}</span>
+                    </div>
+                    <div class="demographic-item" style="margin-bottom: 20px;">
+                        <label for="fname">Mother Tongue:</label>
+                        <br />
+                        <input type="text" id="mother_tongue" name="mother_tongue" {% if client %}
+                            value="{{client.mother_tongue}}" {%else%} value="{{request.POST.mother_tongue}}" {%endif%}
+                            required><br>
+                        <span class="text-danger">{{mother_tongue}}</span>
+                    </div>
+                    <div class="demographic-item" style="margin-bottom: 20px;">
+                        <label for="fname">Mother Name:</label>
+                        <br />
+                        <input type="text" id="mother_name" name="mother_name" {% if client %}
+                            value="{{client.mother_name}}" {%else%} value="{{request.POST.mother_name}}" {%endif%}
+                            required><br>
+                    </div>
+                </span>
+            </div>
+            <div class="Address_flied">
+                <div class="demographic-item" style="margin-bottom: 10px;">
+                    <label for="fname">Branch:</label>
+                    <br />
+                    <input type="text" id="branch1" name="branch" {% if client %}value="{{client.branch}}" {%else%}
+                        value="{{request.POST.branch}}" {%endif%} required><br>
+                </div>
+                <div class="demographic-item" style="margin-bottom: 10px;">
+                    <label for="fname">Address:</label>
+                    <br />
+                    <textarea type="text" id="address" name="address" cols="66" row="30"
+                        required> {% if client %} {{client.address}} {%else%} {{request.POST.address}} {%endif%} </textarea><br>
+                </div>
+            </div>
+
+
+
+
+            <div class="input-flied">
+                <h2>Discontinued
+                    <span class="text-filed">*</span>
+                </h2>
+            </div>
+            <div class="created_input">
+                <span class="left-side1">
+                    <span class="created-left-side">
+                        <input type="checkbox" id="discontinious" name="discontinious" value="False">
+                        <!-- {% if client.discontinious == 'True'%}
+                        <input type="radio" id="discontinious" name="discontinious" value="True" checked>
+                        {%else%}
+                        <input type="radio" id="discontinious" name="discontinious" value="False">
+                        {%endif%} -->
+
+                    </span>
+                    <label for="fname">Discontinued</label>
+                </span>
+            </div>
+            
+            <script>
+                {% if client.discontinious == 'True' %}
+                document.getElementById("discontinious").checked = true
+                {% endif %}
+                {% if request.POST.discontinious == checked %}
+                document.getElementById('discontinious').value = "True"
+              {% endif %}
+              {% if request.POST.discontinious == 'True' %}
+                document.getElementById('discontinious').checked = true
+              {% endif %}
+
+            </script>
+
+
+            <div class="discontinued">
+                <span class="left-side">
+                    <label for="fname" style="margin-bottom: 10px;">Discontinued On:</label>
+                    <br />
+                    <input type="date" id="asses_max" name="discontinious_on" onclick="maxdate()" {% if client %}
+                        value="{{client.discontinious_on}}" {%else%} value="{{request.POST.discontinious_on}}"
+                        {%endif%}>
+                </span>
+            </div>
+
+            <div class="outer1" style="display: flex;">
+                <div class="outer" style="width: 50%">
+                    <div class="input-flied1">
+                        <h2>Assesments
+                            <span class="text-filed">
+                                *
+                            </span>
+                        </h2>
+                    </div>
+
+
+
+                    <div class="created_input">
+                        <span class="created-left-side">
+
+
+                            <input type="checkbox" id="BT" name="assessment" value="BT"
+                            {% if "BT" in update_asses %}checked{%endif%}>
+                            <label for="contactChoice1">BT</label>
+                            <input type="checkbox" id="OT" name="assessment" value="OT"
+                            {% if "OT" in update_asses %}checked{%endif%}>
+                            <label for="contactChoice1">OT</label>
+                            <input type="checkbox" id="ST" name="assessment" value="ST"
+                            {% if "ST" in update_asses %}checked{%endif%}>
+                            <label for="contactChoice3">ST</label>
+
+
+
+                        </span>
+                    </div>
+                </div>
+                <script>
+                    {% for k in assesment_client %}
+                        {{k}}
+                    {% if "BT" in k %}
+                    document.getElementById("BT").checked = true
+
+                    {% endif %}
+                    {% if "OT" in k %}
+                    document.getElementById("OT").checked = true
+                    {% endif %}
+                    {% if "ST" in k %}
+                    document.getElementById("ST").checked = true
+                    {% endif %}
+
+                    {% endfor %}
+                   
+
+                </script>
+
+
+                <div class="outer" style="width: 50%">
+                    <div class="input-flied1">
+                        <h2>Slot time
+                            <span class="text-filed">*</span>
+                        </h2>
+                    </div>
+                    <div class="form-row m-b-55">
+
+                        <div>
+
+                            <label for="appt">Slot time from:</label>
+
+                            <input type="time" id="slot_time_from" name="slot_time_from" {% if client %}
+                                value="{{ client.slot_time_from|time:'H:i' }}" {%else%}
+                                value="{{request.POST.slot_time_from}}" {%endif%} required>
+
+                        </div> &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
+
+                        <div><label for="appt">Slot time to:</label>
+
+                            <input type="time" id="slot_time_to" name="slot_time_to" {% if client %}
+                                value="{{ client.slot_time_to|time:'H:i' }}" {%else%}
+                                value="{{request.POST.slot_time_to}}" {%endif%} required>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <!-- form -->
+
+    <!-- form therapy -->
+    <div class="therapy-input">
+        <div class="container">
+            <label for="theropy">Therapy</label>
+            <select class="js-example-basic-multiple" name="theropy" multiple="multiple">
+                <option id="bt" value="BT" {% if "BT" in select_theropy  %} selected  {%endif%}>BT</option>
+                <option id="ot" value="OT" {% if "OT" in select_theropy  %} selected {%endif%}>OT</option>
+                <option id="st" value="ST" {% if "ST" in select_theropy  %} selected {%endif%}>ST</option>
+                <option id="pt" value="PT" {% if "PT" in select_theropy %} selected {%endif%}>PT</option>
+                <option id="se" value="SE" {% if "SE" in select_theropy %} selected {%endif%}>SE</option>
+            </select>
+
+        </div>
+                <script>
+             
+                 {% if "BT" in update_theropy %} 
+                 document.getElementById("bt").selected = true{%endif%}
+                 {% if "OT" in update_theropy %} 
+                 document.getElementById("ot").selected = true{%endif%}
+                {% if "ST" in update_theropy %} 
+                 document.getElementById("st").selected = true{%endif%}
+                 {% if "PT" in update_theropy %} 
+                 document.getElementById("pt").selected = true{%endif%}
+                 {% if "SE" in update_theropy %} 
+                 document.getElementById("se").selected = true
+                 {%endif%}
+              
+                </script>
+
+   
+
+
+        <div class="Chief_input text-input-aera">
+            <span class="Diagnerge-side">
+                <p>Chief Complaints:</p>
+                <textarea type="text" id="fname" name="chief_complaints" value="" cols="60" row="30" required
+                    class="test">{% if client %} {{client.chief_complaints}} {%else%} {{request.POST.chief_complaints}} {%endif%}</textarea>
+            </span>
+            <span class="Diagnerge-side">
+                <p>Diagnerge</p>
+                <textarea type="text" id="fname" name="diagnosis" value="" cols="60" row="30"
+                    required>{% if client %}{{client.diagnosis}} {%else%} {{request.POST.diagnosis}} {%endif%}</textarea>
+            </span>
+            <span class="Diagnerge-side">
+                <p>Remarks</p>
+                <textarea type="text" id="fname" name="remarks" value="" cols="60" row="30"
+                    required>{% if client %}{{client.remarks}} {%else%} {{request.POST.remarks}} {%endif%}</textarea>
+            </span>
+            <div class="btn-outer">
+                <input type="submit" class="btn login-form__btn submit w-100">
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- form therapy -->
+
+</form>
+
+<script>
+    $(".js-example-basic-multiple").select2({
+        placeholder: "Select a therapy"
+    });
+
+
+    function validateEmail() {
+        var email = document.getElementById('email').value
+
+        var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+
+
+
+        if (reg.test(email) == false) {
+            document.getElementById('email_error').innerHTML = "Invalid Email"
+            return false
+
+        }
+
+
+    }
+
+
+
+
+    //  For Gender
+    {% if client.gender == "Male" %}
+    document.getElementById('male_chkbox').selected = true
+
+    {% elif client.gender == "Female" %}
+    document.getElementById('female_chkbox').selected = true
+
+    {% elif request.POST.gender == "Other" %}
+    document.getElementById('other_chkbox').selected = true
+    {% endif %}
+
+
+    {% if client.assessment == 'BT' %}
+    document.getElementById('BT').checked = true
+    {% elif client.assessment == 'OT' %}
+    document.getElementById('OT').checked = true
+    {% elif client.assessment == 'ST' %}
+    document.getElementById('ST').checked = true
+    {% endif %}
+
+
+    // For Theropy
+    {%for k in client.theropy %}
+    {% if k == 'OT' %}
+    document.getElementById('ot').selected = true
+    {% elif k == 'BT' %}
+    document.getElementById('bt').selected = true
+    {% elif k == "ST" %}
+    document.getElementById('st').selected = true
+    {% elif k == "PT" %}
+    document.getElementById('pt').selected = true
+    {% elif k == "SE" %}
+    document.getElementById('se').selected = true
+    {% endif %}
+    {% endfor %}
+
+
+    function maxs() {
+        var test = document.getElementById("date")
+        console.log(test)
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        console.log(maxDate)
+
+        document.getElementById("date")[0].setAttribute(maxDate);
+
+    }
+
+
+
+    $(function () {
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        console.log(maxDate)
+        $('#date').attr('max', maxDate);
+
+
+
+    });
+
+
+    function getVal() {
+
+
+
+
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        $('#txtDate').attr('max', maxDate);
+
+        var userinput = document.getElementById("date").value;
+        maxDate: 0
+        var testDate = new Date(userinput);
+        var dob = new Date(userinput);
+        var month_diff = Date.now() - dob.getTime();
+        var age_dt = new Date(month_diff);
+        var year = age_dt.getUTCFullYear();
+        var age = Math.abs(year - 1970);
+        document.getElementById("age").value = age
+
+
+    };
+
+    function maxdate() {
+        var test = document.getElementById("asses_max")
+        var dtToday = new Date();
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+        var maxDate = year + '-' + month + '-' + day;
+        document.getElementById("asses_max")[0].setAttribute(maxDate);
+    }
+
+    $(function () {
+        var dtToday = new Date();
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+        var maxDate = year + '-' + month + '-' + day;
+        $('#asses_max').attr('max', maxDate);
+
+    });
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,134 @@
+{% load static %}
+{% block content %}
+
+
+{% for f in client_data %}
+
+{% for d in data %}
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>file_1646301171367</title>
+  <style type="text/css">
+    .assesment_details {
+      margin-top: 20px;
+
+    }
+
+    .hr {
+      margin-top: 10px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      text-indent: 0;
+    }
+
+    p {
+      color: #03296F;
+      font-family: Arial, sans-serif;
+      font-style: normal;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 11pt;
+      margin: 0pt;
+    }
+
+    .s1 {
+      color: black;
+      font-family: Arial, sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      text-decoration: none;
+      font-size: 11pt;
+    }
+
+    a {
+      color: black;
+      font-family: Arial, sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      text-decoration: none;
+      font-size: 11pt;
+    }
+
+    h1 {
+      color: #598BAF;
+      font-family: Arial, sans-serif;
+      font-style: normal;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 11pt;
+    }
+
+    .s2 {
+      color: #8E8E8E;
+      font-family: "Trebuchet MS", sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      text-decoration: none;
+      font-size: 9.5pt;
+    }
+  </style>
+</head>
+
+<body>
+  <center>
+    <h3>Client Information</h3>
+  </center>
+  <p style="text-indent: 0pt;text-align: left;"><br /></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Client Name :<span
+      class="s1">{{f.name}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Client DOB :<span
+      class="s1">{{f.dob}}</span></p>
+  <hr class="hr">
+  <center>
+    <h3 class="assesment_details">Assesment details</h3>
+  </center>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Therapist :<span
+      class="s1">{{d.therapist}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Date_of_assessment :<span
+      class="s1">{{d.date_of_assessment}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Prenatal_history :<span
+      class="s1">{{d.prenatal_history}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Family_history :<span
+      class="s1">{{d.family_history}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Development_history :<span
+      class="s1">{{d.development_history}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">School_history :<span
+      class="s1">{{d.school_history}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Tests_administered :<span
+      class="s1">{{d.tests_administered}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Test_results :<span
+      class="s1">{{d.test_results}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Behavioral_observation :<span
+      class="s1">{{d.behavioural_observation}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Recommendations :<span
+      class="s1">{{d.recommendations}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Created_on :<span
+      class="s1">{{d.created_on}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Created_by :<span
+      class="s1">{{d.created_by}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Modified_on :<span
+      class="s1">{{d.modified_on}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Modified_by :<span
+      class="s1">{{d.modified_by}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Email_sent :<span
+      class="s1">{{d.email_sent}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Version :<span
+      class="s1">{{d.version}}</span></p>
+  <p style="padding-top: 4pt;padding-left: 10pt;text-indent: 1pt;text-align: left;">Status :<span
+      class="s1">{{d.Status}}</span></p>
+
+</body>
+
+</html>
+
+{% endfor %}
+{% endfor %}
+{% endblock %}
