@@ -1,0 +1,404 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}Client{% endblock %}
+{% block content %}
+{% load filter %}
+<div class="container">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    <div class="input-bar1">
+        <div class="input-search">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <input type="text" id="myInput" placeholder="Search with name, assessments and id" onkeyup="myFunction()">
+        </div>
+
+        <div class="btn-group cli">
+            <select name="sort By" id="sortby" class="drop-select1" onchange="sort()">
+                <option value="none" selected>Sort By</option>
+                <option value="asc">Latest</option>
+                <option value="dsc">Oldest</option>
+            </select>
+        </div>
+    </div>
+
+    <table class="table table-bordered month-data" id="month-data">
+
+        <thead>
+
+
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Username</th>
+                <th>Assesments</th>
+                <th>Status</th>
+                <th>PDF</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%if client%}
+
+            {% for clients in client %}
+            <tr>
+
+                <td><a href="#" data-toggle="modal" data-target="#exampleModal1"
+                        onclick="client_modal('{{clients.id}}','{{blnk_dic|get_item:clients.id}}','{{clients.name}}')">{{clients.id}}</a>
+                </td>
+                <td>{{clients.name}}</td>
+                <td>{{clients.user.department}}</td>
+                <td>{{clients.user}}</td>
+                <td style="width: 22px;">
+                    {% if clients.assessment|length > 1 %}
+                    <div class="demographic-item">
+                        <select name="gender" id="gender"
+                            onchange="assesment_status(value,'{{clients.id}}','{{clients.user.id}}')"
+                            style="background: transparent; ">
+                            <option value="" selected disabled>View Status</option>
+                            {% for assessment in blnk_dic|get_item:clients.id %}
+                
+                            <option value="{{assessment}}" id="status_acess">{{assessment}}</option>
+                            {%endfor%}
+
+                        </select>
+                        {%else%}
+                        {{clients.assessment}}
+                        {%endif%}
+
+
+                </td>
+                <td>
+                    {% if clients.assessment|length > 1 %}
+                    <input readonly type="text" id="{{clients.id}}" value="Select Assesment"
+                        style="background: transparent; border:none;">
+                    {%else%}
+                    {% if status|get_item:clients.id == none %}
+                    Not Started
+                    {%else%}
+                    {{status|get_item:clients.id}}
+                    {%endif%}
+                    {%endif%}
+
+
+                </td>
+                <td>
+                    {% if clients.assessment|length == 1 and status|get_item:clients.id == "Submited" %}
+
+                    <a href="download_pdf_file/{{clients.id}}?assesment_id={{clients.assessment}}" class=" pdfclass"
+                        id="pdf{{clients.id}}" value="Select Assesment">View Pdf
+                    </a>
+                    {% elif clients.assessment|length == 1 and status|get_item:clients.id == "Draft" %}
+
+                    <a href="download_pdf_file/{{clients.id}}?assesment_id={{clients.assessment}}" class=" pdfclass"
+                        id="pdf{{clients.id}}" value="Select Assesment">View Pdf
+                    </a>
+                    {%else%}
+                    <a class="pdfclass" id="pdf{{clients.id}}" value="Select Assesment">NO PDF Available
+                    </a>
+                    {%endif%}
+                </td>
+                <!-- code -->
+                <!-- <td>
+                    {% for assessment in blnk_dic|get_item:clients.id %}
+                    {% if assessment == "BT" %}
+                    <a id ="modal_form" class="editass" href="{% url 'update_btassesment' clients.id %}"><button type="button"    
+                            class="btn btn-primary btn-sm">Edit</button></a>        
+                    
+                    {% endif %}
+                    {% endfor %}                     
+                </td> -->
+                <td>
+                
+                {% for assessment in blnk_dic|get_item:clients.id %}
+    
+                <a id="assesment_demo{{clients.id}}" href="#"><button onclick="assesment_demo1('{{clients.id}}','{{assessment}}')" class="btn btn-primary btn-sm">Edit</button></a>
+     
+                {% endfor%}
+           
+                </td>    
+
+                <!-- {% for assessment in blnk_dic|get_item:clients.id %}
+                {% if assessment == "ST" %}
+                <td><a href="update_stassesment/{{clients.id}}">{{clients.id}}</a></td>
+                {% elif assessment == "BT" %}
+                <td><a href="update_btassesment/{{clients.id}}">{{clients.id}}</a></td>
+                {% elif assessment == "OT" %}
+                <td><a href="update_otassesment/{{clients.id}}">{{clients.id}}</a></td>
+
+                {% endif %}
+                {%endfor%}
+
+                <td>{{ clients.name}}</td>
+                <td>{{ department}}</td>
+                <td>{{ username}}</td>
+                <td>{{ clients.assessment}}</td>
+                <td>{{ status|get_item:clients.id }}</td> -->
+
+            </tr>
+
+            {% endfor %}
+
+            {% else %}
+            <tr>
+
+                <td colspan="12" style="text-align:center;">
+                    <b>No record yet</b>
+                </td>
+
+            </tr>
+            {% endif %}
+
+        </tbody>
+    </table>
+    <span>Page {{ client.number }} of {{ client.paginator.num_pages }}</span>
+    <center>
+        {% if client.has_other_pages %}
+        <ul class="pagination">
+            {% if client.has_previous %}
+            <li><a href="?page={{ client.previous_page_number }}">Previous</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in client.paginator.page_range %}
+            {% if client.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if client.has_next %}
+            <li><a href="?page={{ client.next_page_number }}">Next</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+
+    </center>
+
+</div>
+<!-- Modal -->
+<div class="modal fade" style="margin-top: 19px;" id="exampleModal1" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header mt-5">
+                <h3 class="modal-title" id="exampleModalLabel">View Assesment</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" id="modal_form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form_input">
+                        <div class="demographic-item">
+                            <label for="fname">Client Name:</label><br>
+                            <select style="width: 470px;" name="client_select" id="client_select" required>
+                                <option value="" selected disabled>Select Client</option>
+                                {% for k in client %}
+                                <option value="{{k.id}}">{{k.name}}</option>
+                                <hr>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="demographic-item">
+                            <label for="fname"> Assessment</label><br>
+                            <select style="width: 470px;" name="department" id="mySelect" required>
+
+                                <option value="" selected disabled>Select Assessment</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="modal_submit()">View Assessment</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+
+    function client_modal(id, ob, name) {
+        $("#client_select").empty();
+        $("#mySelect").empty();
+        console.log(id)
+        console.log(ob)
+        var client_select = document.getElementById("client_select")
+        var opt = document.createElement('option');
+        opt.value = id
+        opt.innerHTML = name
+        client_select.add(opt)
+        $.each(ob.split(','), function (key, value) {
+            $('#mySelect').append('<option value="' + value + '">' + (value == '-1' ? 'select' : value) + '</option>');
+        });
+    }
+    // CODE
+
+    function assesment_demo1(id, assesment) {
+        console.log(id)
+        console.log(assesment)
+        var client = document.getElementById("assesment_demo" + id)
+        console.log(client, 'client')
+        if (assesment== "BT"){
+            link = "update_btassesment/" + id + "?assesment_id=" + assesment
+            client.href = link
+            console.log(aTclientag, "aaaa")
+        }
+        if (assesment== "OT"){
+            console.log("OT")
+            links = "update_otassesment/" + id + "?assesment_id=" + assesment
+            client.href = links
+            console.log()
+        }
+        if (assesment== "ST"){
+            linkes = "update_stassesment/" + id + "?assesment_id=" + assesment
+            client.href = linkes
+        }
+        }
+ 
+
+    function modal_submit() {
+
+        var client = document.getElementById("modal_form").elements.item(1).value;
+        var assessment = document.getElementById("modal_form").elements.item(2).value.trim();
+        console.log(assessment)
+        if (assessment == "BT") {
+            window.location = "update_btassesment/" + client;
+        }
+        else if (assessment == "ST") {
+            window.location = "update_stassesment/" + client;
+        }
+        else if (assessment == "OT") {
+            window.location = "update_otassesment/" + client;
+        }
+
+        // document.getElementById("modal_form").submit()
+    }
+
+
+    function assesment_status(id, obj, user_id) {
+        console.log(id,"iddddddddd")
+        console.log(obj, "objjjjjjjjjjjj")
+        console.log(user_id, "user_id")
+
+        $.ajax({
+            type: "GET",
+            data: {
+                "id": id,
+                "obj": obj,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+
+            success: function (data) {
+
+                if (data.data[0]['Status']) {
+                    document.getElementById(obj).value = data.data[0]['Status']
+
+                    $.ajax({
+                        type: "GET",
+                        url: "download_pdf_file/" + obj,
+                        data: {
+                            'assesment_id': id,
+                            'csrfmiddlewaretoken': '{{csrf_token}}'
+
+                        },
+                        success: function (msg) {
+                            console.log('abc')
+                        }
+                    });
+
+
+                }
+                else {
+                    document.getElementById(obj).value = "Assesment not submit"
+
+                }
+                // // code
+                if (data.data[0]['Status'] == "Submited") {
+                    link = "?assesment_id=" + id
+                    aTag = document.getElementById("assesment_demo" + id)
+                    console.log(aTag, 'atag1111')
+                    aTag.href = link
+                    aTag.innerHTML = "Edit"
+                }
+                // // code
+
+                if (data.data[0]['Status'] == "Not Started") {
+                    document.getElementById(obj).value = data.data[0]['Status']
+
+
+                }
+                if (data.data[0]['Status'] == "Submited") {
+                    link = "download_pdf_file/" + obj + "?assesment_id=" + id
+                    aTag = document.getElementById("pdf" + obj)
+                    console.log(aTag, 'atag1111')
+                    aTag.href = link
+                    aTag.innerHTML = "View PDF"
+                }
+                
+                
+                
+                
+                if (data.data[0]['Status'] == "Draft") {
+                    link = obj + "?assesment_id=" + id
+                    aTag = document.getElementById("pdf" + obj)
+                    console.log(aTag, 'atag')
+                    aTag.href = link
+                    aTag.innerHTML = "View PDF"
+                }
+                if (data.data[0]['Status'] != "Submited" && data.data[0]['Status'] != "Draft") {
+                    var mydiv = document.getElementById("pdf" + obj)
+                    mydiv.innerHTML = "PDF not available"
+                    document.getElementById("pdf" + obj).removeAttribute('href')
+                }
+            },
+        });
+    }
+
+    function sort() {
+        sort_by = $('#sortby').val();
+        console.log(sort_by)
+        $.ajax({
+            type: "GET",
+            data: {
+                "sort_by": sort_by,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+
+            success: function (data) {
+                $('#month-data').html(data['html']);
+
+
+            },
+        });
+    }
+
+    function myFunction() {
+        search = $('#myInput').val();
+        console.log(search)
+        console.log(search)
+        $.ajax({
+            type: "GET",
+            data: {
+                "search": search,
+                'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+
+            success: function (data) {
+                $('#month-data').html(data['html']);
+
+
+            },
+        });
+    }
+
+
+</script>
+{% endblock %}
